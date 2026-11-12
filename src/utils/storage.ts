@@ -19,6 +19,12 @@ export const DEFAULT_STATS: UserStats = {
   lastStudyDate: new Date().toISOString().split('T')[0],
 };
 
+// Listener notified after any write (used by cloud sync)
+let storageChangeListener: (() => void) | null = null;
+export function setStorageChangeListener(fn: (() => void) | null) {
+  storageChangeListener = fn;
+}
+
 // Open or create IndexedDB
 export function openDB(): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
@@ -214,7 +220,10 @@ export function putToStore<T>(db: IDBDatabase, storeName: string, item: T): Prom
     const tx = db.transaction(storeName, 'readwrite');
     const store = tx.objectStore(storeName);
     store.put(item);
-    tx.oncomplete = () => resolve();
+    tx.oncomplete = () => {
+      storageChangeListener?.();
+      resolve();
+    };
     tx.onerror = () => reject(tx.error);
   });
 }
@@ -226,7 +235,10 @@ export function putManyToStore<T>(db: IDBDatabase, storeName: string, items: T[]
     for (const item of items) {
       store.put(item);
     }
-    tx.oncomplete = () => resolve();
+    tx.oncomplete = () => {
+      storageChangeListener?.();
+      resolve();
+    };
     tx.onerror = () => reject(tx.error);
   });
 }
@@ -249,7 +261,10 @@ export async function deleteQuestion(questionId: string): Promise<void> {
     const tx = db.transaction([STORE_QUESTIONS, STORE_PROGRESS], 'readwrite');
     tx.objectStore(STORE_QUESTIONS).delete(questionId);
     tx.objectStore(STORE_PROGRESS).delete(questionId);
-    tx.oncomplete = () => resolve();
+    tx.oncomplete = () => {
+      storageChangeListener?.();
+      resolve();
+    };
     tx.onerror = () => reject(tx.error);
   });
 }

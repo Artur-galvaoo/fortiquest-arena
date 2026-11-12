@@ -14,6 +14,7 @@ import {
 import { MinimalistTrainer } from './components/MinimalistTrainer';
 import { SettingsModal } from './components/SettingsModal';
 import { ToastProvider } from './components/ui/Toast';
+import { CloudSyncButton } from './components/CloudSyncButton';
 
 export default function App() {
   const [loading, setLoading] = useState(true);
@@ -103,6 +104,8 @@ export default function App() {
         onOpenSettings={() => setIsSettingsOpen(true)}
         isSettingsOpen={isSettingsOpen}
       />
+
+      <CloudSyncButton onRemoteData={handleReloadAll} />
 
       <SettingsModal
         isOpen={isSettingsOpen}
