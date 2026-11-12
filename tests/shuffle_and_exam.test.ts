@@ -36,3 +36,20 @@ test('exam clock: format and limit', () => {
     4000
   );
 });
+
+import { syncQuestionsWithSeed } from '../src/utils/storage.ts';
+
+test('seed v5: docs 79–93 exist with images on disk and reach returning users', async () => {
+  const fs = await import('node:fs');
+  const added = SEED_QUESTIONS.filter((q) => q.docNumber >= 79);
+  assert.strictEqual(added.length, 15);
+  for (const q of SEED_QUESTIONS) {
+    for (const b of q.blocks.filter((x) => x.type === 'image')) {
+      assert.ok(b.url, `Q${q.docNumber} image without url`);
+      assert.ok(fs.existsSync('public/' + b.url), `missing file ${b.url}`);
+    }
+  }
+  const oldBank = SEED_QUESTIONS.filter((q) => q.docNumber <= 78);
+  const res = syncQuestionsWithSeed(oldBank, SEED_QUESTIONS, 4, 5);
+  assert.strictEqual(res.questions.length, 92);
+});

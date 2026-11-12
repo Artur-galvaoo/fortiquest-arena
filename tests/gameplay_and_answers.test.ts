@@ -44,11 +44,11 @@ test('Question 50 (Web filtering facebook.com) data integrity', () => {
   assert.ok(optA.text.includes('web rating override') || optA.text.includes('override'));
 });
 
-test('All 77 questions have verified answers, valid domains and consistent options', () => {
-  assert.strictEqual(SEED_QUESTIONS.length, 77);
+test('All 92 questions have verified answers, valid domains and consistent options', () => {
+  assert.strictEqual(SEED_QUESTIONS.length, 92);
 
   SEED_QUESTIONS.forEach(q => {
-    assert.ok(q.docNumber >= 1 && q.docNumber <= 78 && q.docNumber !== 73);
+    assert.ok(q.docNumber >= 1 && q.docNumber <= 93 && q.docNumber !== 73);
     assert.ok(q.correctAnswers && q.correctAnswers.length > 0, `Q#${q.docNumber} has no correct answers`);
     assert.ok(['deployment_system', 'firewall_auth', 'content_inspection', 'routing', 'vpn'].includes(q.domain || ''));
     

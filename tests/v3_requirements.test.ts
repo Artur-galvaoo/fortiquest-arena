@@ -56,7 +56,7 @@ test('2. explicação: stripMarkdown removes all ** and ` without residual aster
     );
     count++;
   }
-  assert.strictEqual(count, 77, 'All 77 questions verified');
+  assert.strictEqual(count, 92, 'All 92 questions verified');
 });
 
 // 3. seleção: numa questão de 2 respostas, marcar 3 mantém só as 2 últimas, e Confirmar fica desabilitado com 1.
@@ -118,8 +118,8 @@ test('4. pool: questions without correctAnswers are never drawn in training pool
 
 // 5. dados: todas as 77 questões têm explanation com linha de conceito e uma linha por alternativa,
 // e nenhuma alternativa tem texto com menos de 3 caracteres (pega o caso da Q36).
-test('5. dados: all 77 questions have explanation with concept line, alternative lines, and alternatives >= 3 chars', () => {
-  assert.strictEqual(SEED_QUESTIONS.length, 77, 'Must have exactly 77 questions');
+test('5. dados: all 92 questions have explanation with concept line, alternative lines, and alternatives >= 3 chars', () => {
+  assert.strictEqual(SEED_QUESTIONS.length, 92, 'Must have exactly 92 questions');
 
   for (const q of SEED_QUESTIONS) {
     // Explanation checks

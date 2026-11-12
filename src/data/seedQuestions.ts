@@ -1,9 +1,9 @@
 // Auto-generated seed data for FortiQuest NSE4 questions
-// Total questions: 77 (Doc numbers 1 to 78, excluding 73)
+// Total questions: 92 (Doc numbers 1 to 93, excluding 73)
 // All answers loaded from official exam dump highlights and corrected table
 import { Question } from '../types/quiz';
 
-export const SEED_VERSION = 4;
+export const SEED_VERSION = 5;
 
 export const SEED_QUESTIONS: Question[] = [
   {
@@ -4236,5 +4236,828 @@ export const SEED_QUESTIONS: Question[] = [
     "warnings": [],
     "domain": "vpn",
     "explanation": "**Conceito:** Phase 1 IKEv1 autentica por PSK ou certificado. O XAuth adiciona usuário e senha (mais seguro, com mais pacotes).\n- ✅ A: PSK e certificado.\n- ❌ B: com signature, os dois lados precisam de certificado.\n- ✅ C: XAuth pede usuário e senha.\n- ❌ D: XAuth tem **mais** pacotes, não é mais rápido."
+  },
+  {
+    "id": "q-79",
+    "docNumber": 79,
+    "origin": "questao 79 do documento \"dump_7.6 VERSAO_3\" = questao 60 do site examtopics",
+    "blocks": [
+      {
+        "id": "b1",
+        "type": "text",
+        "content": "Refer to the exhibit to view the firewall policy."
+      },
+      {
+        "id": "b2",
+        "type": "image",
+        "url": "exhibits/q79-1.png",
+        "pending": false,
+        "label": "Exhibit"
+      },
+      {
+        "id": "b3",
+        "type": "text",
+        "content": "Why would the firewall policy not block a well-known virus, for example EICAR? (Choose one answer)"
+      }
+    ],
+    "options": [
+      {
+        "id": "opt-A",
+        "letter": "A",
+        "text": "The action on the firewall policy is not set to DENY."
+      },
+      {
+        "id": "opt-B",
+        "letter": "B",
+        "text": "Web filter is not enabled, so the firewall policy does not complement the antivirus profile."
+      },
+      {
+        "id": "opt-C",
+        "letter": "C",
+        "text": "The firewall policy is not configured in proxy-based inspection mode."
+      },
+      {
+        "id": "opt-D",
+        "letter": "D",
+        "text": "The firewall policy does not apply deep content inspection."
+      }
+    ],
+    "isMultipleChoice": false,
+    "requiredAnswersCount": 1,
+    "correctAnswers": [
+      "D"
+    ],
+    "tags": [
+      "Antivirus",
+      "Firewall Policy",
+      "SSL Inspection"
+    ],
+    "warnings": [],
+    "domain": "content_inspection",
+    "explanation": "**Conceito:** sem deep inspection o FortiGate não enxerga o conteúdo cifrado (HTTPS), então o antivírus não acha o EICAR.\n- ❌ A: com DENY o tráfego nem passaria; o objetivo é inspecionar e bloquear o vírus.\n- ❌ B: o antivírus funciona sozinho, não depende do web filter.\n- ❌ C: o modo flow-based também detecta o EICAR.\n- ✅ D: certificate inspection só olha o certificado, não o conteúdo."
+  },
+  {
+    "id": "q-80",
+    "docNumber": 80,
+    "origin": "questao 80 do documento \"dump_7.6 VERSAO_3\" = questao 62 do site examtopics",
+    "blocks": [
+      {
+        "id": "b1",
+        "type": "text",
+        "content": "Which three methods are used by the collector agent for AD polling? (Choose three answers)"
+      }
+    ],
+    "options": [
+      {
+        "id": "opt-A",
+        "letter": "A",
+        "text": "NetAPI"
+      },
+      {
+        "id": "opt-B",
+        "letter": "B",
+        "text": "WMI"
+      },
+      {
+        "id": "opt-C",
+        "letter": "C",
+        "text": "WinSecLog"
+      },
+      {
+        "id": "opt-D",
+        "letter": "D",
+        "text": "DNS reverse lookup"
+      },
+      {
+        "id": "opt-E",
+        "letter": "E",
+        "text": "FSSO REST API"
+      }
+    ],
+    "isMultipleChoice": true,
+    "requiredAnswersCount": 3,
+    "correctAnswers": [
+      "A",
+      "B",
+      "C"
+    ],
+    "tags": [
+      "FSSO",
+      "Collector Agent",
+      "AD Polling"
+    ],
+    "warnings": [],
+    "domain": "firewall_auth",
+    "explanation": "**Conceito:** o collector agent faz polling dos DCs por NetAPI, WMI ou WinSecLog.\n- ✅ A: NetAPI consulta as sessões do DC.\n- ✅ B: WMI lê os eventos de logon pelo WMI.\n- ✅ C: WinSecLog lê o Security Event Log.\n- ❌ D: DNS reverso resolve o IP da estação, não é método de polling.\n- ❌ E: REST API não é método de AD polling do collector agent."
+  },
+  {
+    "id": "q-81",
+    "docNumber": 81,
+    "origin": "questao 81 do documento \"dump_7.6 VERSAO_3\" = questao 67 do site examtopics",
+    "blocks": [
+      {
+        "id": "b1",
+        "type": "text",
+        "content": "Refer to the exhibit."
+      },
+      {
+        "id": "b2",
+        "type": "image",
+        "url": "exhibits/q81-1.png",
+        "pending": false,
+        "label": "Exhibit"
+      },
+      {
+        "id": "b3",
+        "type": "text",
+        "content": "The exhibit shows the FortiGuard Category Based Filter section of a corporate web filter profile. An administrator must block access to download.com, which belongs to the Freeware and Software Downloads category. The administrator must also allow other websites in the same category. What are two solutions for satisfying the requirement? (Choose two answers)"
+      }
+    ],
+    "options": [
+      {
+        "id": "opt-A",
+        "letter": "A",
+        "text": "Configure a static URL filter entry for download.com with Type and Action set to Wildcard and Block, respectively."
+      },
+      {
+        "id": "opt-B",
+        "letter": "B",
+        "text": "Configure a web override rating for download.com and select Malicious Websites as the subcategory."
+      },
+      {
+        "id": "opt-C",
+        "letter": "C",
+        "text": "Configure a separate firewall policy with action Deny and an FQDN address object for *.download.com as destination address."
+      },
+      {
+        "id": "opt-D",
+        "letter": "D",
+        "text": "Set the Freeware and Software Downloads category Action to Warning."
+      }
+    ],
+    "isMultipleChoice": true,
+    "requiredAnswersCount": 2,
+    "correctAnswers": [
+      "A",
+      "B"
+    ],
+    "tags": [
+      "Web Filter",
+      "URL Filter",
+      "Rating Override"
+    ],
+    "warnings": [],
+    "domain": "content_inspection",
+    "explanation": "**Conceito:** para bloquear um site sem bloquear a categoria inteira, use URL filter estático ou rating override para uma categoria bloqueada.\n- ✅ A: URL filter wildcard com Block bloqueia só o download.com.\n- ✅ B: o override joga o site numa categoria bloqueada (Malicious Websites).\n- ❌ C: policy com FQDN não é a solução de web filter esperada e afeta outros serviços.\n- ❌ D: Warning afeta a categoria inteira e ainda deixa o usuário prosseguir."
+  },
+  {
+    "id": "q-82",
+    "docNumber": 82,
+    "origin": "questao 82 do documento \"dump_7.6 VERSAO_3\" = questao 70 do site examtopics",
+    "blocks": [
+      {
+        "id": "b1",
+        "type": "text",
+        "content": "An administrator creates a new address object on the root FortiGate (HQ-NGFW-1) in the Security Fabric. After synchronization, this object is not available on the downstream FortiGate (HQ-ISFW)."
+      },
+      {
+        "id": "b2",
+        "type": "image",
+        "url": "exhibits/q82-1.png",
+        "pending": false,
+        "label": "Exhibit 1"
+      },
+      {
+        "id": "b3",
+        "type": "image",
+        "url": "exhibits/q82-2.png",
+        "pending": false,
+        "label": "Exhibit 2"
+      },
+      {
+        "id": "b4",
+        "type": "text",
+        "content": "What must the administrator do to synchronize the address object?"
+      }
+    ],
+    "options": [
+      {
+        "id": "opt-A",
+        "letter": "A",
+        "text": "Change the csf setting on HQ-ISFW (downstream) to set configuration-sync local."
+      },
+      {
+        "id": "opt-B",
+        "letter": "B",
+        "text": "Change the csf setting on HQ-ISFW (downstream) to set saml-configuration-sync default."
+      },
+      {
+        "id": "opt-C",
+        "letter": "C",
+        "text": "Change the csf setting on HQ-NGFW-1 (root) to set fabric-object-unification default."
+      },
+      {
+        "id": "opt-D",
+        "letter": "D",
+        "text": "Change the csf setting on both devices to set downstream-access enable."
+      }
+    ],
+    "isMultipleChoice": false,
+    "requiredAnswersCount": 1,
+    "correctAnswers": [
+      "C"
+    ],
+    "tags": [
+      "Security Fabric",
+      "Object Sync",
+      "CSF"
+    ],
+    "warnings": [],
+    "domain": "deployment_system",
+    "explanation": "**Conceito:** a sincronização de objetos do Fabric é controlada no root por `fabric-object-unification`.\n- ❌ A: `configuration-sync local` faz o downstream **não** aceitar a config do root.\n- ❌ B: SAML sync trata de SSO, não de objetos de endereço.\n- ✅ C: com `default` no root, os objetos são enviados aos downstream.\n- ❌ D: downstream-access controla acesso de gestão, não sync de objetos."
+  },
+  {
+    "id": "q-83",
+    "docNumber": 83,
+    "origin": "questao 83 do documento \"dump_7.6 VERSAO_3\" = questao 73 do site examtopics",
+    "blocks": [
+      {
+        "id": "b1",
+        "type": "text",
+        "content": "When configuring the connection between FortiGate and FortiAnalyzer, which option indicates that reliable traffic is enabled? (Choose one answer)"
+      }
+    ],
+    "options": [
+      {
+        "id": "opt-A",
+        "letter": "A",
+        "text": "The connection status shows a green check icon"
+      },
+      {
+        "id": "opt-B",
+        "letter": "B",
+        "text": "The interface status is set to up"
+      },
+      {
+        "id": "opt-C",
+        "letter": "C",
+        "text": "A padlock icon appears in the connection settings"
+      },
+      {
+        "id": "opt-D",
+        "letter": "D",
+        "text": "The logging mode is set to real-time"
+      }
+    ],
+    "isMultipleChoice": false,
+    "requiredAnswersCount": 1,
+    "correctAnswers": [
+      "C"
+    ],
+    "tags": [
+      "FortiAnalyzer",
+      "Logging",
+      "Reliable"
+    ],
+    "warnings": [],
+    "domain": "deployment_system",
+    "explanation": "**Conceito:** com reliable logging (TCP + criptografia), a GUI mostra um cadeado na conexão com o FortiAnalyzer.\n- ❌ A: o check verde só indica que a conexão está ativa.\n- ❌ B: status da interface não diz nada sobre reliable.\n- ✅ C: o cadeado indica tráfego reliable/criptografado.\n- ❌ D: real-time é o modo de upload, não o reliable."
+  },
+  {
+    "id": "q-84",
+    "docNumber": 84,
+    "origin": "questao 84 do documento \"dump_7.6 VERSAO_3\" = questao 75 do site examtopics",
+    "blocks": [
+      {
+        "id": "b1",
+        "type": "text",
+        "content": "When configuring a FortiGate in a multi-WAN setup, why would an administrator enable session preservation on an interface? (Choose one answer)"
+      }
+    ],
+    "options": [
+      {
+        "id": "opt-A",
+        "letter": "A",
+        "text": "To allow the FortiGate to dynamically change interfaces for all active sessions when a WAN link fails"
+      },
+      {
+        "id": "opt-B",
+        "letter": "B",
+        "text": "To make sure all sessions without source NAT enabled always use the primary WAN link"
+      },
+      {
+        "id": "opt-C",
+        "letter": "C",
+        "text": "To improve security by forcing users to authenticate again when the WAN link changes"
+      },
+      {
+        "id": "opt-D",
+        "letter": "D",
+        "text": "To ensure that existing SSL VPN connections remain on the same interface even if route changes occur"
+      }
+    ],
+    "isMultipleChoice": false,
+    "requiredAnswersCount": 1,
+    "correctAnswers": [
+      "D"
+    ],
+    "tags": [
+      "SD-WAN",
+      "Session Preservation",
+      "Multi-WAN"
+    ],
+    "warnings": [],
+    "domain": "routing",
+    "explanation": "**Conceito:** session preservation mantém sessões existentes na mesma interface mesmo com mudança de rota.\n- ❌ A: é o contrário: preservar evita trocar a interface das sessões.\n- ❌ B: não tem relação com sessões sem SNAT.\n- ❌ C: não força nova autenticação.\n- ✅ D: conexões existentes (como SSL VPN) ficam na mesma interface."
+  },
+  {
+    "id": "q-85",
+    "docNumber": 85,
+    "origin": "questao 85 do documento \"dump_7.6 VERSAO_3\" = questao 76 do site examtopics",
+    "blocks": [
+      {
+        "id": "b1",
+        "type": "text",
+        "content": "Exhibits:"
+      },
+      {
+        "id": "b2",
+        "type": "image",
+        "url": "exhibits/q85-1.png",
+        "pending": false,
+        "label": "Exhibit"
+      },
+      {
+        "id": "b3",
+        "type": "text",
+        "content": "You are asked to implement an antivirus profile for files downloaded through FTP, HTTP, and HTTPS. While testing, you are successful with HTTP and FTP protocols, but FortiGate does not block the file download over HTTPS. What could be the cause?"
+      }
+    ],
+    "options": [
+      {
+        "id": "opt-A",
+        "letter": "A",
+        "text": "The feature set in the antivirus profile is not set to Flow-based."
+      },
+      {
+        "id": "opt-B",
+        "letter": "B",
+        "text": "Web filter is not enabled on the firewall policy to complement the antivirus profile."
+      },
+      {
+        "id": "opt-C",
+        "letter": "C",
+        "text": "The action on the firewall policy is not set to deny."
+      },
+      {
+        "id": "opt-D",
+        "letter": "D",
+        "text": "The SSL inspection mode in the firewall policy is not deep content inspection."
+      }
+    ],
+    "isMultipleChoice": false,
+    "requiredAnswersCount": 1,
+    "correctAnswers": [
+      "D"
+    ],
+    "tags": [
+      "Antivirus",
+      "HTTPS",
+      "SSL Inspection"
+    ],
+    "warnings": [],
+    "domain": "content_inspection",
+    "explanation": "**Conceito:** HTTP e FTP são abertos; HTTPS só é inspecionado com deep content inspection.\n- ❌ A: proxy-based também inspeciona, o problema é a criptografia.\n- ❌ B: o antivírus não depende do web filter.\n- ❌ C: DENY bloquearia tudo, não é o objetivo.\n- ✅ D: sem deep inspection o arquivo dentro do HTTPS não é visto."
+  },
+  {
+    "id": "q-86",
+    "docNumber": 86,
+    "origin": "questao 86 do documento \"dump_7.6 VERSAO_3\" = questao 78 do site examtopics",
+    "blocks": [
+      {
+        "id": "b1",
+        "type": "text",
+        "content": "You are onboarding an agentless, secure web gateway (SWG) endpoint for secure internet access (SIA). What will happen to the user's nonweb traffic? (Choose one answer)"
+      }
+    ],
+    "options": [
+      {
+        "id": "opt-A",
+        "letter": "A",
+        "text": "All the nonweb traffic will bypass FortiSASE."
+      },
+      {
+        "id": "opt-B",
+        "letter": "B",
+        "text": "The endpoint will use split tunneling to redirect nonweb traffic to FortiSASE."
+      },
+      {
+        "id": "opt-C",
+        "letter": "C",
+        "text": "FortiSASE will use Firewall-as-a-Service (FWaaS) to redirect nonweb traffic."
+      },
+      {
+        "id": "opt-D",
+        "letter": "D",
+        "text": "FortiSASE will use SWG to redirect nonweb traffic to FortiExtender."
+      }
+    ],
+    "isMultipleChoice": false,
+    "requiredAnswersCount": 1,
+    "correctAnswers": [
+      "A"
+    ],
+    "tags": [
+      "FortiSASE",
+      "SWG",
+      "SIA"
+    ],
+    "warnings": [],
+    "domain": "deployment_system",
+    "explanation": "**Conceito:** no modo SWG agentless só o tráfego web (via proxy/PAC) vai ao FortiSASE.\n- ✅ A: tráfego não-web não passa pelo FortiSASE.\n- ❌ B: split tunneling é do modo com agente (FortiClient).\n- ❌ C: FWaaS exige o túnel do agente, não o SWG.\n- ❌ D: FortiExtender não tem papel aqui."
+  },
+  {
+    "id": "q-87",
+    "docNumber": 87,
+    "origin": "questao 87 do documento \"dump_7.6 VERSAO_3\" = questao 79 do site examtopics",
+    "blocks": [
+      {
+        "id": "b1",
+        "type": "text",
+        "content": "Refer to the exhibit."
+      },
+      {
+        "id": "b2",
+        "type": "image",
+        "url": "exhibits/q87-1.png",
+        "pending": false,
+        "label": "Exhibit"
+      },
+      {
+        "id": "b3",
+        "type": "text",
+        "content": "An administrator has created a new firewall address to use as the destination for a static route. Why is the administrator not able to select the new address in the Destination field of the new static route? (Choose one answer)"
+      }
+    ],
+    "options": [
+      {
+        "id": "opt-A",
+        "letter": "A",
+        "text": "In the new static route, the administrator must select Named Address."
+      },
+      {
+        "id": "opt-B",
+        "letter": "B",
+        "text": "In the new firewall address, the FQDN address must first be resolved."
+      },
+      {
+        "id": "opt-C",
+        "letter": "C",
+        "text": "In the new static route, the administrator must first set the interface to port2."
+      },
+      {
+        "id": "opt-D",
+        "letter": "D",
+        "text": "In the new firewall address, Routing configuration must be enabled."
+      }
+    ],
+    "isMultipleChoice": false,
+    "requiredAnswersCount": 1,
+    "correctAnswers": [
+      "D"
+    ],
+    "tags": [
+      "Static Route",
+      "Address Object"
+    ],
+    "warnings": [],
+    "domain": "routing",
+    "explanation": "**Conceito:** um address object só aparece como destino de rota estática com **Routing configuration** habilitado (`allow-routing`).\n- ❌ A: mesmo em Named Address, o objeto não aparece sem allow-routing.\n- ❌ B: resolver o FQDN não libera o uso em rota.\n- ❌ C: a interface não filtra a lista de endereços.\n- ✅ D: é preciso habilitar Routing configuration no objeto."
+  },
+  {
+    "id": "q-88",
+    "docNumber": 88,
+    "origin": "questao 88 do documento \"dump_7.6 VERSAO_3\" = questao 88 do site examtopics",
+    "blocks": [
+      {
+        "id": "b1",
+        "type": "text",
+        "content": "Refer to the exhibit."
+      },
+      {
+        "id": "b2",
+        "type": "image",
+        "url": "exhibits/q88-1.png",
+        "pending": false,
+        "label": "Exhibit"
+      },
+      {
+        "id": "b3",
+        "type": "text",
+        "content": "A network administrator is troubleshooting an IPsec tunnel between two FortiGate devices. The administrator has determined that phase 1 failed to come up. The administrator has also re-entered the pre-shared key on both FortiGate devices to make sure they match. Based on the phase 1 configuration and the diagram shown in the exhibit, which two configuration changes can the administrator make to bring phase 1 up? (Choose two.)"
+      }
+    ],
+    "options": [
+      {
+        "id": "opt-A",
+        "letter": "A",
+        "text": "On HQ-NGFW, disable Diffie-Hellman group 2."
+      },
+      {
+        "id": "opt-B",
+        "letter": "B",
+        "text": "On HQ-NGFW, set IKE mode to Main (ID protection)."
+      },
+      {
+        "id": "opt-C",
+        "letter": "C",
+        "text": "On BR1-FGT, set port2 to Interface."
+      },
+      {
+        "id": "opt-D",
+        "letter": "D",
+        "text": "On both FortiGate devices, set Dead Peer Detection to On Demand."
+      }
+    ],
+    "isMultipleChoice": true,
+    "requiredAnswersCount": 2,
+    "correctAnswers": [
+      "B",
+      "C"
+    ],
+    "tags": [
+      "IPsec",
+      "Phase 1",
+      "Troubleshooting"
+    ],
+    "warnings": [],
+    "domain": "vpn",
+    "explanation": "**Conceito:** a phase 1 só sobe se o modo IKE e a interface de saída estiverem corretos (HQ está em Aggressive, o remoto em Main).\n- ❌ A: os dois lados já têm o DH grupo 5 em comum.\n- ✅ B: o modo IKE (Main x Aggressive) precisa ser igual.\n- ✅ C: no lado remoto a Interface está como port1, mas o link de saída é a port2.\n- ❌ D: DPD não impede a phase 1 de subir."
+  },
+  {
+    "id": "q-89",
+    "docNumber": 89,
+    "origin": "questao 89 do documento \"dump_7.6 VERSAO_3\" = questao 89 do site examtopics",
+    "blocks": [
+      {
+        "id": "b1",
+        "type": "text",
+        "content": "A network administrator is configuring an IPsec VPN tunnel for a sales employee travelling abroad. Which VPN Wizard template must the administrator apply?"
+      }
+    ],
+    "options": [
+      {
+        "id": "opt-A",
+        "letter": "A",
+        "text": "Remote Access"
+      },
+      {
+        "id": "opt-B",
+        "letter": "B",
+        "text": "Hub-and-Spoke"
+      },
+      {
+        "id": "opt-C",
+        "letter": "C",
+        "text": "Site-to-Site"
+      },
+      {
+        "id": "opt-D",
+        "letter": "D",
+        "text": "Dial-up User"
+      }
+    ],
+    "isMultipleChoice": false,
+    "requiredAnswersCount": 1,
+    "correctAnswers": [
+      "A"
+    ],
+    "tags": [
+      "IPsec",
+      "VPN Wizard",
+      "Remote Access"
+    ],
+    "warnings": [],
+    "domain": "vpn",
+    "explanation": "**Conceito:** usuário móvel com FortiClient usa o template **Remote Access** do VPN Wizard.\n- ✅ A: Remote Access é para usuários remotos.\n- ❌ B: Hub-and-Spoke liga vários sites.\n- ❌ C: Site-to-Site liga dois gateways fixos.\n- ❌ D: não é um template do wizard na 7.6."
+  },
+  {
+    "id": "q-90",
+    "docNumber": 90,
+    "origin": "questao 90 do documento \"dump_7.6 VERSAO_3\" = questao 91 do site examtopics",
+    "blocks": [
+      {
+        "id": "b1",
+        "type": "text",
+        "content": "Which two statements about the Security Fabric rating are true? (Choose two answers)"
+      }
+    ],
+    "options": [
+      {
+        "id": "opt-A",
+        "letter": "A",
+        "text": "A license is required to obtain an executive summary in the Security Rating section."
+      },
+      {
+        "id": "opt-B",
+        "letter": "B",
+        "text": "The root FortiGate provides executive summaries of all the FortiGate devices in the Security Fabric."
+      },
+      {
+        "id": "opt-C",
+        "letter": "C",
+        "text": "The Security Posture category provides PCI compliance results."
+      },
+      {
+        "id": "opt-D",
+        "letter": "D",
+        "text": "Security Rating Insights are available only in the Security Rating page."
+      }
+    ],
+    "isMultipleChoice": true,
+    "requiredAnswersCount": 2,
+    "correctAnswers": [
+      "A",
+      "B"
+    ],
+    "tags": [
+      "Security Fabric",
+      "Security Rating"
+    ],
+    "warnings": [],
+    "domain": "deployment_system",
+    "explanation": "**Conceito:** o Security Rating completo (com executive summary) exige licença e é visto no root do Fabric.\n- ✅ A: executive summary exige licença de Security Rating.\n- ✅ B: o root consolida o resumo de todos os FortiGates.\n- ❌ C: PCI fica em compliance, não em Security Posture.\n- ❌ D: os insights aparecem também em outras páginas (ex.: policies)."
+  },
+  {
+    "id": "q-91",
+    "docNumber": 91,
+    "origin": "questao 91 do documento \"dump_7.6 VERSAO_3\" = questao 92 do site examtopics",
+    "blocks": [
+      {
+        "id": "b1",
+        "type": "text",
+        "content": "You are encountering connectivity problems caused by intermediate devices blocking IPsec traffic. In which two ways can you effectively resolve the problem? (Choose two answers)"
+      }
+    ],
+    "options": [
+      {
+        "id": "opt-A",
+        "letter": "A",
+        "text": "You can use SSL VPN tunnel mode to prevent problems with blocked ESP and UDP ports (500 or 4500)."
+      },
+      {
+        "id": "opt-B",
+        "letter": "B",
+        "text": "You can turn on fragmentation to fix large certificate negotiation problems."
+      },
+      {
+        "id": "opt-C",
+        "letter": "C",
+        "text": "You can configure a hub-and-spoke topology with SSL VPN tunnels to bypass blocked UDP ports."
+      },
+      {
+        "id": "opt-D",
+        "letter": "D",
+        "text": "You should use the protocol IKEv2."
+      }
+    ],
+    "isMultipleChoice": true,
+    "requiredAnswersCount": 2,
+    "correctAnswers": [
+      "A",
+      "B"
+    ],
+    "tags": [
+      "IPsec",
+      "SSL VPN",
+      "Fragmentation"
+    ],
+    "warnings": [],
+    "domain": "vpn",
+    "explanation": "**Conceito:** se ESP/UDP 500/4500 são bloqueados, troque para SSL (TCP) ou fragmente pacotes IKE grandes.\n- ✅ A: SSL VPN usa TCP/443 e passa onde IPsec é bloqueado.\n- ✅ B: fragmentação resolve certificados grandes descartados no caminho.\n- ❌ C: hub-and-spoke com SSL VPN não é uma topologia suportada para isso.\n- ❌ D: IKEv2 usa as mesmas portas, continua bloqueado."
+  },
+  {
+    "id": "q-92",
+    "docNumber": 92,
+    "origin": "questao 92 do documento \"dump_7.6 VERSAO_3\" = questao 64 do site examtopics (drag and drop)",
+    "blocks": [
+      {
+        "id": "b1",
+        "type": "text",
+        "content": "DRAG DROP An administrator wants to form an HA cluster using the FGCP protocol. Both FortiGate devices are configured with the set override enable command. Arrange the criteria in the order in which the FGCP protocol uses them to elect the primary FortiGate."
+      },
+      {
+        "id": "b2",
+        "type": "image",
+        "url": "exhibits/q92-1.png",
+        "pending": false,
+        "label": "Exhibit"
+      },
+      {
+        "id": "b3",
+        "type": "text",
+        "content": "Choose the correct order (first to last)."
+      }
+    ],
+    "options": [
+      {
+        "id": "opt-A",
+        "letter": "A",
+        "text": "Connected monitored ports > Priority > HA uptime > FortiGate serial number"
+      },
+      {
+        "id": "opt-B",
+        "letter": "B",
+        "text": "Connected monitored ports > HA uptime > Priority > FortiGate serial number"
+      },
+      {
+        "id": "opt-C",
+        "letter": "C",
+        "text": "Priority > Connected monitored ports > HA uptime > FortiGate serial number"
+      },
+      {
+        "id": "opt-D",
+        "letter": "D",
+        "text": "HA uptime > Priority > Connected monitored ports > FortiGate serial number"
+      }
+    ],
+    "isMultipleChoice": false,
+    "requiredAnswersCount": 1,
+    "correctAnswers": [
+      "A"
+    ],
+    "tags": [
+      "HA",
+      "FGCP",
+      "Election"
+    ],
+    "warnings": [],
+    "domain": "deployment_system",
+    "explanation": "**Conceito:** com override enable, a prioridade sobe antes do HA uptime: monitored ports > priority > uptime > serial.\n- ✅ A: ordem correta com override enable.\n- ❌ B: essa é a ordem com override disable.\n- ❌ C: portas monitoradas sempre vêm primeiro.\n- ❌ D: uptime não vem antes de priority com override."
+  },
+  {
+    "id": "q-93",
+    "docNumber": 93,
+    "origin": "questao 93 do documento \"dump_7.6 VERSAO_3\" = questao 68 do site examtopics",
+    "blocks": [
+      {
+        "id": "b1",
+        "type": "text",
+        "content": "You have implemented the application sensor and the corresponding firewall policy as shown in the exhibits."
+      },
+      {
+        "id": "b2",
+        "type": "image",
+        "url": "exhibits/q93-1.png",
+        "pending": false,
+        "label": "Exhibit 1"
+      },
+      {
+        "id": "b3",
+        "type": "image",
+        "url": "exhibits/q93-2.png",
+        "pending": false,
+        "label": "Exhibit 2"
+      },
+      {
+        "id": "b4",
+        "type": "text",
+        "content": "You cannot access any of the Google applications, but you are able to access www.fortinet.com. What would you do to resolve this issue?"
+      }
+    ],
+    "options": [
+      {
+        "id": "opt-A",
+        "letter": "A",
+        "text": "Change the Inspection mode to Proxy-based."
+      },
+      {
+        "id": "opt-B",
+        "letter": "B",
+        "text": "Set SSL inspection to deep-content-inspection."
+      },
+      {
+        "id": "opt-C",
+        "letter": "C",
+        "text": "Move up Google in the Application and Filter Overrides section to set its priority to 1."
+      },
+      {
+        "id": "opt-D",
+        "letter": "D",
+        "text": "Add Google.com to the URL category in the security profile."
+      }
+    ],
+    "isMultipleChoice": false,
+    "requiredAnswersCount": 1,
+    "correctAnswers": [
+      "C"
+    ],
+    "tags": [
+      "Application Control",
+      "Overrides"
+    ],
+    "warnings": [],
+    "domain": "content_inspection",
+    "explanation": "**Conceito:** Application and Filter Overrides são avaliados de cima para baixo; o primeiro match vence.\n- ❌ A: o modo de inspeção não muda a ordem dos overrides.\n- ❌ B: a aplicação já é identificada, o problema é a ordem.\n- ✅ C: com o Google em prioridade 1, o Allow casa antes do bloqueio.\n- ❌ D: categoria de URL não resolve um bloqueio de application control."
   }
 ];

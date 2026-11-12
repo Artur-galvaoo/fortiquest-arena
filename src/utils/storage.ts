@@ -95,6 +95,15 @@ export function syncQuestionsWithSeed(
     return q;
   });
 
+  // Questions added to the seed after the user's first visit (e.g. docs 79–93 in seed v5)
+  const existingIds = new Set(questions.map((q) => q.id));
+  for (const seed of seedQuestions) {
+    if (!existingIds.has(seed.id)) {
+      questions.push(seed);
+      updated = true;
+    }
+  }
+
   return { questions, updated, newVersion: targetSeedVersion };
 }
 
