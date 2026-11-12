@@ -26,7 +26,7 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[rgba(16,24,40,0.40)]"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-overlay backdrop-blur-sm"
       role="alertdialog"
       aria-modal="true"
     >
@@ -46,7 +46,7 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
           </Button>
           <Button
             variant={variant === 'danger' ? 'danger' : 'primary'}
-            className={variant === 'danger' ? '!bg-danger !text-white hover:!opacity-90' : ''}
+            className={variant === 'danger' ? '!bg-danger !text-on-accent hover:!opacity-90' : ''}
             onClick={onConfirm}
           >
             {confirmLabel}

@@ -269,7 +269,7 @@ export const GabaritoManager: React.FC<GabaritoManagerProps> = ({
                   <span
                     className={`w-7 h-7 rounded-sm flex items-center justify-center text-[12px] font-semibold ${
                       isCorrect
-                        ? 'bg-success text-white border border-success'
+                        ? 'bg-success text-on-accent border border-success'
                         : 'bg-subtle text-muted border border-border'
                     }`}
                   >
@@ -302,7 +302,7 @@ export const GabaritoManager: React.FC<GabaritoManagerProps> = ({
 
       {/* Batch Import Modal */}
       {showBatchModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[rgba(16,24,40,0.40)]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-overlay backdrop-blur-sm">
           <div className="bg-surface border border-border rounded-lg shadow-pop p-6 max-w-[500px] w-full space-y-4">
             <h3 className="text-[18px] font-semibold text-text">
               Importar Gabarito em Lote

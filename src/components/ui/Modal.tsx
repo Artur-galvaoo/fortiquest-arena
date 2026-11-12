@@ -54,7 +54,7 @@ export const Modal: React.FC<ModalProps> = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center sm:p-4 bg-[rgba(16,24,40,0.40)] overflow-y-auto"
+      className="fixed inset-0 z-50 flex items-center justify-center sm:p-4 bg-overlay backdrop-blur-sm overflow-y-auto"
       role="dialog"
       aria-modal="true"
     >

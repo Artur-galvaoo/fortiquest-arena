@@ -15,13 +15,13 @@ export const Button: React.FC<ButtonProps> = ({
   ...props
 }) => {
   const baseClasses =
-    'inline-flex items-center justify-center font-medium rounded-md transition-colors cursor-pointer select-none text-[14px] leading-none shrink-0';
+    'inline-flex items-center justify-center font-semibold rounded-full transition-all cursor-pointer select-none text-[14px] leading-none shrink-0';
 
   const sizeClasses = size === 'sm' ? 'h-8 px-3 text-[13px]' : 'h-10 px-4 text-[14px]';
 
   const variantClasses = {
     primary:
-      'bg-accent text-white hover:bg-accent-hover active:bg-accent-hover shadow-xs',
+      'bg-accent text-on-accent hover:bg-accent-hover active:scale-[.98] shadow-[0_6px_18px_-6px_var(--color-accent)]',
     secondary:
       'bg-surface border border-border text-text hover:bg-subtle active:bg-subtle',
     ghost:

@@ -33,7 +33,7 @@ export const Chip: React.FC<ChipProps> = ({
   return (
     <span
       onClick={onClick}
-      className={`inline-flex items-center gap-1.5 h-[22px] px-2 text-[12px] font-medium rounded-sm whitespace-nowrap leading-none ${colorClasses} ${interactiveClasses} ${className}`}
+      className={`inline-flex items-center gap-1.5 h-[24px] px-2.5 text-[12px] font-semibold rounded-full whitespace-nowrap leading-none ${colorClasses} ${interactiveClasses} ${className}`}
       {...props}
     >
       {children}

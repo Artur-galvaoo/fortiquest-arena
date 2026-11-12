@@ -388,7 +388,7 @@ export const QuestionEditor: React.FC<QuestionEditorProps> = ({
                     rows={4}
                     value={block.content || ''}
                     onChange={(e) => handleUpdateBlockContent(idx, e.target.value)}
-                    className="font-mono text-[13px] bg-[#0F1115] text-[#D6DAE1]"
+                    className="font-mono text-[13px] !bg-term-bg !text-term-text caret-accent"
                     placeholder="# comando FortiOS console..."
                   />
                 )}
@@ -493,7 +493,7 @@ export const QuestionEditor: React.FC<QuestionEditorProps> = ({
                     onClick={() => handleToggleCorrectOption(opt.letter)}
                     className={`w-9 h-9 shrink-0 rounded-sm font-semibold text-[13px] flex items-center justify-center transition-colors cursor-pointer select-none ${
                       isCorrect
-                        ? 'bg-success text-white border border-success'
+                        ? 'bg-success text-on-accent border border-success'
                         : 'bg-subtle text-muted border border-border hover:border-border-strong'
                     }`}
                     title={isCorrect ? 'Alternativa correta (clique para alternar)' : 'Clique para marcar como correta'}

@@ -19,8 +19,12 @@ import {
   CircleCheck, 
   CircleX, 
   CheckCircle2, 
-  AlertCircle 
+  AlertCircle,
+  Sun,
+  Moon,
+  ShieldCheck,
 } from 'lucide-react';
+import { useTheme } from '../utils/theme';
 
 interface MinimalistTrainerProps {
   questions: Question[];
@@ -40,6 +44,7 @@ export const MinimalistTrainer: React.FC<MinimalistTrainerProps> = ({
   isSettingsOpen,
 }) => {
   // Mode: All questions vs Only Errored questions
+  const { theme, toggle: toggleTheme } = useTheme();
   const [onlyErrorsMode, setOnlyErrorsMode] = useState(false);
 
   // Active question and history
@@ -326,8 +331,8 @@ export const MinimalistTrainer: React.FC<MinimalistTrainerProps> = ({
     const otherLines = rawLines.filter((l) => l !== conceptLine);
 
     return (
-      <div className="bg-surface border border-border rounded-lg p-5 shadow-card mt-6">
-        <h4 className="text-[14px] font-semibold text-muted mb-2">Por quê</h4>
+      <div className="fq-enter relative overflow-hidden bg-surface border border-border rounded-xl p-5 sm:p-6 shadow-card mt-6 before:absolute before:inset-y-0 before:left-0 before:w-1 before:bg-gradient-to-b before:from-accent before:to-[#E0479E]">
+        <h4 className="font-display text-[13px] font-semibold uppercase tracking-[.12em] text-accent mb-2">Por quê</h4>
 
         {conceptLine && (
           <div className="text-[15px] font-medium text-text leading-relaxed mb-4">
@@ -382,20 +387,25 @@ export const MinimalistTrainer: React.FC<MinimalistTrainerProps> = ({
     : 0;
 
   return (
-    <div className="min-h-screen bg-bg text-text selection:bg-accent selection:text-white flex flex-col">
+    <div className="min-h-screen bg-bg text-text flex flex-col">
       {/* 2.1 Header: sticky, surface, border-b, height 56px, max 720px */}
-      <header className="h-14 bg-surface border-b border-border sticky top-0 z-20 shrink-0">
+      <header className="h-16 bg-surface/75 backdrop-blur-xl border-b border-border/70 sticky top-0 z-20 shrink-0">
         <div className="max-w-[720px] mx-auto h-full px-4 flex items-center justify-between gap-4">
           {/* Left: FortiQuest 15/600 + progress bar 4px + 34/77 decoradas 12 muted */}
           <div className="flex items-center gap-3">
-            <span className="text-[15px] font-semibold text-text whitespace-nowrap">
-              FortiQuest
+            <span className="flex items-center gap-2 whitespace-nowrap">
+              <span className="w-8 h-8 rounded-[10px] bg-gradient-to-br from-accent to-[#E0479E] text-white flex items-center justify-center shadow-[0_6px_16px_-6px_var(--color-accent)]">
+                <ShieldCheck className="w-[18px] h-[18px] stroke-[2]" />
+              </span>
+              <span className="font-display text-[18px] font-bold text-text tracking-tight hidden sm:inline">
+                Forti<span className="text-accent">Quest</span>
+              </span>
             </span>
 
             <div className="flex items-center gap-2">
-              <div className="w-20 sm:w-28 h-1 bg-subtle rounded-full overflow-hidden">
+              <div className="w-16 sm:w-28 h-1.5 bg-subtle rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-accent rounded-full transition-all duration-300"
+                  className="h-full bg-gradient-to-r from-accent to-[#E0479E] rounded-full transition-all duration-500"
                   style={{ width: `${progressPercent}%` }}
                 />
               </div>
@@ -417,6 +427,18 @@ export const MinimalistTrainer: React.FC<MinimalistTrainerProps> = ({
               <span className="opacity-70">·</span>
               <span className="tabular-nums">{erroredQuestions.length}</span>
             </Chip>
+
+            <IconButton
+              aria-label={theme === 'dark' ? 'Ativar modo claro' : 'Ativar modo noturno'}
+              tooltip={theme === 'dark' ? 'Modo claro' : 'Modo noturno'}
+              onClick={toggleTheme}
+            >
+              {theme === 'dark' ? (
+                <Sun key="sun" className="fq-spin-in w-4 h-4 stroke-[1.75]" />
+              ) : (
+                <Moon key="moon" className="fq-spin-in w-4 h-4 stroke-[1.75]" />
+              )}
+            </IconButton>
 
             <IconButton
               aria-label="Abrir administração"
@@ -450,10 +472,10 @@ export const MinimalistTrainer: React.FC<MinimalistTrainerProps> = ({
             Carregando questões...
           </div>
         ) : (
-          <div>
+          <div key={currentQuestion.id} className="fq-enter">
             {/* Question Heading: "Questão N" 18/600 + neutral chips */}
             <div className="flex items-center justify-between gap-3 mb-4">
-              <h1 className="text-[18px] font-semibold text-text leading-tight">
+              <h1 className="font-display text-[24px] font-bold text-text leading-tight tracking-tight">
                 Questão {currentQuestion.docNumber}
               </h1>
 
@@ -489,9 +511,9 @@ export const MinimalistTrainer: React.FC<MinimalistTrainerProps> = ({
                   return (
                     <div
                       key={block.id || index}
-                      className="rounded-md bg-[#0F1115] text-[#D6DAE1] overflow-hidden my-4 shadow-card border border-border"
+                      className="rounded-lg bg-term-bg text-term-text overflow-hidden my-4 shadow-card border border-border"
                     >
-                      <div className="h-8 px-3.5 bg-[#14161C] border-b border-border/10 flex items-center justify-between">
+                      <div className="h-8 px-3.5 bg-term-head border-b border-white/5 flex items-center justify-between">
                         <span className="font-mono text-[12px] text-muted">CLI</span>
                         <button
                           type="button"
@@ -512,7 +534,7 @@ export const MinimalistTrainer: React.FC<MinimalistTrainerProps> = ({
                           )}
                         </button>
                       </div>
-                      <pre className="p-4 font-mono text-[13px] leading-[1.55] overflow-x-auto whitespace-pre select-text text-[#D6DAE1]">
+                      <pre className="p-4 font-mono text-[13px] leading-[1.55] overflow-x-auto whitespace-pre select-text text-term-text">
                         <code>{block.content}</code>
                       </pre>
                     </div>
@@ -525,11 +547,11 @@ export const MinimalistTrainer: React.FC<MinimalistTrainerProps> = ({
                   return (
                     <div key={block.id || index} className="my-4">
                       {hasImage ? (
-                        <div className="relative group inline-block max-w-full bg-white border border-border rounded-md p-2 shadow-card">
+                        <div className="relative group inline-block max-w-full bg-surface border border-border rounded-lg p-2 shadow-card">
                           <img
                             src={block.url}
                             alt={block.label || `Exhibit da Questão ${currentQuestion.docNumber}`}
-                            className="max-h-[380px] w-auto max-w-full object-contain rounded-sm cursor-pointer"
+                            className="exhibit-img max-h-[380px] w-auto max-w-full object-contain rounded-[8px] cursor-pointer"
                             onClick={() =>
                               setActiveLightboxImage({
                                 url: block.url,
@@ -547,7 +569,7 @@ export const MinimalistTrainer: React.FC<MinimalistTrainerProps> = ({
                                 blockId: block.id,
                               })
                             }
-                            className="absolute top-3 right-3 w-8 h-8 rounded-sm bg-white/90 hover:bg-white text-muted hover:text-text border border-border flex items-center justify-center transition-colors shadow-xs cursor-pointer"
+                            className="absolute top-3 right-3 w-8 h-8 rounded-full bg-surface/90 hover:bg-surface backdrop-blur text-muted hover:text-text border border-border flex items-center justify-center transition-colors shadow-xs cursor-pointer"
                             title="Ampliar imagem"
                             aria-label="Ampliar imagem"
                           >
@@ -563,7 +585,7 @@ export const MinimalistTrainer: React.FC<MinimalistTrainerProps> = ({
                         <div
                           onPaste={(e) => handlePasteOnPendingExhibit(block.id, e)}
                           tabIndex={0}
-                          className="border border-dashed border-border rounded-md p-6 text-center bg-subtle focus:border-accent focus:outline-none transition-colors"
+                          className="border border-dashed border-border rounded-lg p-6 text-center bg-subtle focus:border-accent focus:outline-none transition-colors"
                         >
                           <ImagePlus className="w-6 h-6 text-faint stroke-[1.75] mx-auto mb-2" />
                           <p className="text-[13px] text-muted mb-1">
@@ -604,23 +626,23 @@ export const MinimalistTrainer: React.FC<MinimalistTrainerProps> = ({
                 const isCorrect = (currentQuestion.correctAnswers || []).includes(letter);
 
                 // Styling logic per section 2.1
-                let cardClass = 'bg-surface border border-border hover:border-border-strong text-text';
+                let cardClass = 'bg-surface border border-border hover:border-border-strong hover:-translate-y-px hover:shadow-card text-text';
                 let badgeClass = 'bg-subtle text-muted border border-border';
 
                 if (!isSubmitted) {
                   if (isSelected) {
                     cardClass = 'bg-accent-soft border-[1.5px] border-accent text-text';
-                    badgeClass = 'bg-accent text-white border-accent font-semibold';
+                    badgeClass = 'bg-accent text-on-accent border-accent font-semibold';
                   }
                 } else {
                   if (isCorrect) {
                     cardClass = 'bg-success-soft border border-success text-text';
-                    badgeClass = 'bg-success text-white border-success font-semibold';
+                    badgeClass = 'bg-success text-on-accent border-success font-semibold';
                   } else if (isSelected && !isCorrect) {
                     cardClass = 'bg-danger-soft border border-danger text-text';
-                    badgeClass = 'bg-danger text-white border-danger font-semibold';
+                    badgeClass = 'bg-danger text-on-accent border-danger font-semibold';
                   } else {
-                    cardClass = 'bg-surface border border-border text-muted opacity-55';
+                    cardClass = 'bg-surface border border-border text-muted opacity-75';
                     badgeClass = 'bg-subtle text-faint border border-border';
                   }
                 }
@@ -629,14 +651,14 @@ export const MinimalistTrainer: React.FC<MinimalistTrainerProps> = ({
                   <div
                     key={option.id || letter}
                     onClick={() => handleToggleOption(letter)}
-                    className={`w-full p-3.5 sm:px-4 sm:py-3.5 rounded-md flex items-center justify-between gap-3.5 transition-colors select-none ${
+                    className={`w-full p-3.5 sm:px-4 sm:py-3.5 rounded-lg flex items-center justify-between gap-3.5 transition-all duration-200 select-none ${
                       !isSubmitted ? 'cursor-pointer' : 'cursor-default'
                     } ${cardClass}`}
                   >
                     <div className="flex items-center gap-3.5 flex-1 min-w-0">
                       {/* Letter badge: 28x28, radius 8 */}
                       <span
-                        className={`w-7 h-7 shrink-0 rounded-sm flex items-center justify-center text-[12px] font-semibold select-none ${badgeClass}`}
+                        className={`w-8 h-8 shrink-0 rounded-full flex items-center justify-center text-[12px] font-semibold select-none ${badgeClass}`}
                       >
                         {letter}
                       </span>
