@@ -45,6 +45,7 @@ export const TrainingToolbar: React.FC<Props> = ({
   const overLimit = elapsed >= EXAM_LIMIT_MS;
   const pct = Math.min(100, (elapsed / EXAM_LIMIT_MS) * 100);
   const paused = session.active && !session.runningSince;
+  const avgMs = session.answered > 0 ? elapsed / session.answered : null;
   const accuracy = session.answered > 0 ? Math.round((session.correct / session.answered) * 100) : null;
 
   return (
@@ -125,11 +126,12 @@ export const TrainingToolbar: React.FC<Props> = ({
               </p>
             </div>
 
-            <div className="flex items-center gap-5 text-right">
+            <div className="flex flex-wrap items-center gap-x-5 gap-y-3 sm:text-right">
               <Stat label="Respondidas" value={session.answered} />
               <Stat label="Acertos" value={session.correct} tone="success" />
               <Stat label="Erros" value={session.answered - session.correct} tone="danger" />
               <Stat label="Aproveit." value={accuracy === null ? '–' : `${accuracy}%`} />
+              <Stat label="Média/questão" value={avgMs === null ? '–' : formatClock(avgMs)} tone="accent" />
             </div>
           </div>
 
@@ -164,7 +166,7 @@ export const TrainingToolbar: React.FC<Props> = ({
   );
 };
 
-const Stat: React.FC<{ label: string; value: React.ReactNode; tone?: 'success' | 'danger' }> = ({
+const Stat: React.FC<{ label: string; value: React.ReactNode; tone?: 'success' | 'danger' | 'accent' }> = ({
   label,
   value,
   tone,
@@ -172,7 +174,7 @@ const Stat: React.FC<{ label: string; value: React.ReactNode; tone?: 'success' |
   <div>
     <p
       className={`font-display text-[20px] font-bold leading-none tabular-nums ${
-        tone === 'success' ? 'text-success' : tone === 'danger' ? 'text-danger' : 'text-text'
+        tone === 'success' ? 'text-success' : tone === 'danger' ? 'text-danger' : tone === 'accent' ? 'text-accent' : 'text-text'
       }`}
     >
       {value}
