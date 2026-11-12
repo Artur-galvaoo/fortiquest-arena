@@ -10,6 +10,7 @@ interface Props {
   onStartExam: () => void;
   onStopExam: () => void;
   onTogglePause: () => void;
+  totalQuestions: number;
 }
 
 const Segment: React.FC<{
@@ -41,6 +42,7 @@ export const TrainingToolbar: React.FC<Props> = ({
   onStartExam,
   onStopExam,
   onTogglePause,
+  totalQuestions,
 }) => {
   const overLimit = elapsed >= EXAM_LIMIT_MS;
   const pct = Math.min(100, (elapsed / EXAM_LIMIT_MS) * 100);
@@ -59,6 +61,9 @@ export const TrainingToolbar: React.FC<Props> = ({
       /* ignore */
     }
   }, [hidden]);
+
+  const covered = Math.min(totalQuestions, (session.seenIds || []).length);
+  const coveragePct = totalQuestions > 0 ? Math.round((covered / totalQuestions) * 100) : 0;
 
   const avgMs = session.answered > 0 ? elapsed / session.answered : null;
   const accuracy = session.answered > 0 ? Math.round((session.correct / session.answered) * 100) : null;
@@ -171,6 +176,8 @@ export const TrainingToolbar: React.FC<Props> = ({
           }`}
         >
           <div className="flex flex-wrap items-end justify-between gap-4">
+            <div className="flex items-center gap-4">
+            <CoverageRing pct={coveragePct} covered={covered} total={totalQuestions} />
             <div>
               <p className="text-[12px] font-semibold uppercase tracking-[.12em] text-muted flex items-center gap-1.5">
                 <Hourglass className="w-3.5 h-3.5 stroke-[2]" />
@@ -184,6 +191,7 @@ export const TrainingToolbar: React.FC<Props> = ({
               >
                 {formatClock(elapsed)}
               </p>
+            </div>
             </div>
 
             <div className="flex flex-wrap items-center gap-x-5 gap-y-3 sm:text-right">
@@ -245,3 +253,48 @@ const Stat: React.FC<{ label: string; value: React.ReactNode; tone?: 'success' |
     <p className="text-[11px] text-muted mt-1">{label}</p>
   </div>
 );
+
+/** Circular progress showing how much of the question bank this session has covered. */
+const CoverageRing: React.FC<{ pct: number; covered: number; total: number }> = ({ pct, covered, total }) => {
+  const r = 26;
+  const c = 2 * Math.PI * r;
+  const complete = covered >= total && total > 0;
+  return (
+    <div
+      className="relative w-[68px] h-[68px] shrink-0"
+      role="img"
+      aria-label={`Cobertura: ${covered} de ${total} questões (${pct}%)`}
+      title={`${covered} de ${total} questões diferentes respondidas neste simulado`}
+    >
+      <svg viewBox="0 0 64 64" className="w-full h-full -rotate-90">
+        <defs>
+          <linearGradient id="fq-ring-grad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="var(--color-accent)" />
+            <stop offset="100%" stopColor="#E0479E" />
+          </linearGradient>
+        </defs>
+        <circle cx="32" cy="32" r={r} fill="none" stroke="var(--color-subtle)" strokeWidth="6" />
+        <circle
+          cx="32"
+          cy="32"
+          r={r}
+          fill="none"
+          stroke={complete ? 'var(--color-success)' : 'url(#fq-ring-grad)'}
+          strokeWidth="6"
+          strokeLinecap="round"
+          strokeDasharray={c}
+          strokeDashoffset={c * (1 - pct / 100)}
+          style={{ transition: 'stroke-dashoffset .8s cubic-bezier(.32,.72,0,1)' }}
+        />
+      </svg>
+      <div className="absolute inset-0 flex flex-col items-center justify-center leading-none">
+        <span className={`font-display text-[15px] font-bold tabular-nums ${complete ? 'text-success' : 'text-text'}`}>
+          {pct}%
+        </span>
+        <span className="text-[9.5px] text-muted tabular-nums mt-0.5">
+          {covered}/{total}
+        </span>
+      </div>
+    </div>
+  );
+};

@@ -188,7 +188,7 @@ export const MinimalistTrainer: React.FC<MinimalistTrainerProps> = ({
 
     setIsAnswerCorrect(isCorrect);
     setIsSubmitted(true);
-    exam.recordAnswer(isCorrect);
+    exam.recordAnswer(isCorrect, currentQuestion.id);
 
     // Update Leitner progress
     const currentProg = progressMap[currentQuestion.id] || {
@@ -487,6 +487,7 @@ export const MinimalistTrainer: React.FC<MinimalistTrainerProps> = ({
           onStartExam={exam.start}
           onStopExam={exam.stop}
           onTogglePause={exam.togglePause}
+          totalQuestions={validQuestions.length}
         />
 
         {/* Empty State when "Só as que errei" has no pending questions */}

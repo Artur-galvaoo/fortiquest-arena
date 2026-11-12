@@ -14,9 +14,11 @@ export interface ExamSession {
   runningSince: number | null;
   answered: number;
   correct: number;
+  /** Distinct question ids answered in this session */
+  seenIds: string[];
 }
 
-const EMPTY: ExamSession = { active: false, elapsedBeforeMs: 0, runningSince: null, answered: 0, correct: 0 };
+const EMPTY: ExamSession = { active: false, elapsedBeforeMs: 0, runningSince: null, answered: 0, correct: 0, seenIds: [] };
 
 function load<T>(key: string, fallback: T): T {
   try {
@@ -76,10 +78,17 @@ export function useExamSession() {
     );
   }, []);
 
-  const recordAnswer = useCallback((isCorrect: boolean) => {
-    setSession((s) =>
-      s.active ? { ...s, answered: s.answered + 1, correct: s.correct + (isCorrect ? 1 : 0) } : s
-    );
+  const recordAnswer = useCallback((isCorrect: boolean, questionId?: string) => {
+    setSession((s) => {
+      if (!s.active) return s;
+      const seen = s.seenIds || [];
+      return {
+        ...s,
+        answered: s.answered + 1,
+        correct: s.correct + (isCorrect ? 1 : 0),
+        seenIds: questionId && !seen.includes(questionId) ? [...seen, questionId] : seen,
+      };
+    });
   }, []);
 
   return { session, elapsed: elapsedMs(session, now), start, stop, togglePause, recordAnswer };

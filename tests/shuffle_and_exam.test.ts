@@ -32,7 +32,7 @@ test('exam clock: format and limit', () => {
   assert.strictEqual(formatClock(65_000), '01:05');
   assert.strictEqual(formatClock(EXAM_LIMIT_MS), '1:55:00');
   assert.strictEqual(
-    elapsedMs({ active: true, elapsedBeforeMs: 1000, runningSince: 5000, answered: 0, correct: 0 }, 8000),
+    elapsedMs({ active: true, elapsedBeforeMs: 1000, runningSince: 5000, answered: 0, correct: 0, seenIds: [] }, 8000),
     4000
   );
 });
