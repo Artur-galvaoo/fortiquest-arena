@@ -25,6 +25,9 @@ import {
   ShieldCheck,
 } from 'lucide-react';
 import { useTheme } from '../utils/theme';
+import { buildDisplayOptions, originalToDisplayMap, DISPLAY_LETTERS } from '../utils/shuffle';
+import { useExamSession, useTrainerPrefs } from '../utils/exam';
+import { TrainingToolbar } from './TrainingToolbar';
 
 interface MinimalistTrainerProps {
   questions: Question[];
@@ -46,6 +49,9 @@ export const MinimalistTrainer: React.FC<MinimalistTrainerProps> = ({
   // Mode: All questions vs Only Errored questions
   const { theme, toggle: toggleTheme } = useTheme();
   const [onlyErrorsMode, setOnlyErrorsMode] = useState(false);
+  const [prefs, setPrefs] = useTrainerPrefs();
+  const exam = useExamSession();
+  const [pickCount, setPickCount] = useState(0);
 
   // Active question and history
   const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null);
@@ -55,6 +61,16 @@ export const MinimalistTrainer: React.FC<MinimalistTrainerProps> = ({
   const [selectedAnswers, setSelectedAnswers] = useState<string[]>([]);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isAnswerCorrect, setIsAnswerCorrect] = useState<boolean | null>(null);
+
+  // On-screen order of alternatives (reshuffled every time a question is drawn)
+  const currentOptions = currentQuestion?.options;
+  const displayOptions = useMemo(
+    () => buildDisplayOptions(currentOptions || [], prefs.shuffleOptions),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [currentQuestion?.id, currentOptions, prefs.shuffleOptions, pickCount]
+  );
+  const toDisplay = useMemo(() => originalToDisplayMap(displayOptions), [displayOptions]);
+  const showLetter = (orig: string) => toDisplay[orig] || orig;
 
   // Terminal & Image interactions
   const [copiedBlockId, setCopiedBlockId] = useState<string | null>(null);
@@ -104,6 +120,7 @@ export const MinimalistTrainer: React.FC<MinimalistTrainerProps> = ({
         setIsSubmitted(false);
         setIsAnswerCorrect(null);
         setRecentIds((prev) => [...prev.slice(-4), nextQ.id]);
+        setPickCount((c) => c + 1);
       } catch (err) {
         console.error('Error selecting next question:', err);
       }
@@ -171,6 +188,7 @@ export const MinimalistTrainer: React.FC<MinimalistTrainerProps> = ({
 
     setIsAnswerCorrect(isCorrect);
     setIsSubmitted(true);
+    exam.recordAnswer(isCorrect);
 
     // Update Leitner progress
     const currentProg = progressMap[currentQuestion.id] || {
@@ -205,7 +223,7 @@ export const MinimalistTrainer: React.FC<MinimalistTrainerProps> = ({
     };
 
     await onUpdateProgress(updatedProgress);
-  }, [isSubmitted, currentQuestion, selectedAnswers, progressMap, onUpdateProgress]);
+  }, [isSubmitted, currentQuestion, selectedAnswers, progressMap, onUpdateProgress, exam.recordAnswer]);
 
   // Advance to next question
   const handleNextQuestion = useCallback(() => {
@@ -235,10 +253,10 @@ export const MinimalistTrainer: React.FC<MinimalistTrainerProps> = ({
       };
 
       if (!isSubmitted && keyMap[key]) {
-        const letter = keyMap[key];
-        if (currentQuestion?.options.some((opt) => opt.letter === letter)) {
+        const target = displayOptions[DISPLAY_LETTERS.indexOf(keyMap[key])];
+        if (target) {
           e.preventDefault();
-          handleToggleOption(letter);
+          handleToggleOption(target.option.letter);
           return;
         }
       }
@@ -267,6 +285,7 @@ export const MinimalistTrainer: React.FC<MinimalistTrainerProps> = ({
     handleNextQuestion,
     isSettingsOpen,
     activeLightboxImage,
+    displayOptions,
   ]);
 
   // Copy CLI command
@@ -328,7 +347,13 @@ export const MinimalistTrainer: React.FC<MinimalistTrainerProps> = ({
     const conceptLine = rawLines.find(
       (l) => l.toLowerCase().startsWith('**conceito:') || l.toLowerCase().startsWith('conceito:')
     );
-    const otherLines = rawLines.filter((l) => l !== conceptLine);
+    const letterOf = (l: string) =>
+      l.replace(/^[-*]\s*/, '').replace(/^[✅❌]\s*/, '').match(/^([A-E]):/)?.[1];
+    const otherLines = rawLines
+      .filter((l) => l !== conceptLine)
+      .map((l, i) => ({ l, i, d: letterOf(l) ? showLetter(letterOf(l)!) : null }))
+      .sort((a, b) => (a.d && b.d ? a.d.localeCompare(b.d) : a.i - b.i))
+      .map((x) => x.l);
 
     return (
       <div className="fq-enter relative overflow-hidden bg-surface border border-border rounded-xl p-5 sm:p-6 shadow-card mt-6 before:absolute before:inset-y-0 before:left-0 before:w-1 before:bg-gradient-to-b before:from-accent before:to-[#E0479E]">
@@ -365,7 +390,7 @@ export const MinimalistTrainer: React.FC<MinimalistTrainerProps> = ({
                     {matchLetter ? (
                       <>
                         <span className="font-semibold text-text mr-1.5">
-                          {matchLetter[1]}:
+                          {showLetter(matchLetter[1])}:
                         </span>
                         <span>{parseInlineMarkdown(matchLetter[2])}</span>
                       </>
@@ -410,20 +435,21 @@ export const MinimalistTrainer: React.FC<MinimalistTrainerProps> = ({
                 />
               </div>
               <span className="text-[12px] text-muted whitespace-nowrap tabular-nums">
-                {masteredCount}/{validQuestions.length} decoradas
+                {masteredCount}/{validQuestions.length}<span className="hidden sm:inline"> decoradas</span>
               </span>
             </div>
           </div>
 
           {/* Right: toggle "Só as que errei · N" + IconButton engrenagem */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 sm:gap-2 shrink-0">
             <Chip
               clickable
               active={onlyErrorsMode}
               onClick={() => setOnlyErrorsMode(!onlyErrorsMode)}
               title="Filtrar apenas questões que você já errou e ainda não decorou"
             >
-              <span>Só as que errei</span>
+              <span className="hidden sm:inline">Só as que errei</span>
+              <span className="sm:hidden">Erros</span>
               <span className="opacity-70">·</span>
               <span className="tabular-nums">{erroredQuestions.length}</span>
             </Chip>
@@ -453,6 +479,16 @@ export const MinimalistTrainer: React.FC<MinimalistTrainerProps> = ({
 
       {/* Main Single Column Container (max 720px) */}
       <main className="flex-1 max-w-[720px] w-full mx-auto px-4 py-6 sm:py-8">
+        <TrainingToolbar
+          shuffleOn={prefs.shuffleOptions}
+          onToggleShuffle={() => setPrefs((p) => ({ ...p, shuffleOptions: !p.shuffleOptions }))}
+          session={exam.session}
+          elapsed={exam.elapsed}
+          onStartExam={exam.start}
+          onStopExam={exam.stop}
+          onTogglePause={exam.togglePause}
+        />
+
         {/* Empty State when "Só as que errei" has no pending questions */}
         {onlyErrorsMode && erroredQuestions.length === 0 ? (
           <div className="bg-surface border border-border rounded-lg p-8 sm:p-12 shadow-card my-8">
@@ -620,7 +656,7 @@ export const MinimalistTrainer: React.FC<MinimalistTrainerProps> = ({
 
             {/* Alternatives List */}
             <div className="space-y-2.5 mb-2" role="group" aria-label="Alternativas da questão">
-              {currentQuestion.options.map((option) => {
+              {displayOptions.map(({ option, displayLetter }) => {
                 const letter = option.letter;
                 const isSelected = selectedAnswers.includes(letter);
                 const isCorrect = (currentQuestion.correctAnswers || []).includes(letter);
@@ -660,7 +696,7 @@ export const MinimalistTrainer: React.FC<MinimalistTrainerProps> = ({
                       <span
                         className={`w-8 h-8 shrink-0 rounded-full flex items-center justify-center text-[12px] font-semibold select-none ${badgeClass}`}
                       >
-                        {letter}
+                        {displayLetter}
                       </span>
 
                       {/* Option Text: 16px, line-height 1.6 */}
@@ -718,7 +754,7 @@ export const MinimalistTrainer: React.FC<MinimalistTrainerProps> = ({
                       </Chip>
                     ) : (
                       <Chip variant="danger" className="px-3 py-1 h-auto text-[13px]">
-                        Incorreto · resposta {(currentQuestion.correctAnswers || []).join(', ')}
+                        Incorreto · resposta {(currentQuestion.correctAnswers || []).map(showLetter).sort().join(', ')}
                       </Chip>
                     )}
                   </div>
