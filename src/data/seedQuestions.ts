@@ -3,7 +3,7 @@
 // All answers loaded from official exam dump highlights and corrected table
 import { Question } from '../types/quiz';
 
-export const SEED_VERSION = 5;
+export const SEED_VERSION = 6;
 
 export const SEED_QUESTIONS: Question[] = [
   {
@@ -1953,56 +1953,32 @@ export const SEED_QUESTIONS: Question[] = [
         "id": "b1",
         "type": "text",
         "content": "The FortiGate device HQ-NGFW-1 with the IP address 10.0.13.254 sends logs to the FortiAnalyzer device with the IP address 10.0.13.125. The administrator wants to verify that reliable logging is enabled on HQ-NGFW-1. Which exhibit helps with the verification?"
-      },
-      {
-        "id": "b2",
-        "type": "image",
-        "pending": false,
-        "label": "Exhibits: A (diagnose sniffer packet), B (config log fortianalyzer setting), C (FortiAnalyzer GUI), D (FortiAnalyzer GUI)",
-        "url": "exhibits/q36-1.png"
-      },
-      {
-        "id": "img36-2",
-        "type": "image",
-        "url": "exhibits/q36-2.jpeg",
-        "pending": false,
-        "label": "Exhibit 2"
-      },
-      {
-        "id": "img36-3",
-        "type": "image",
-        "url": "exhibits/q36-3.jpeg",
-        "pending": false,
-        "label": "Exhibit 3"
-      },
-      {
-        "id": "img36-4",
-        "type": "image",
-        "url": "exhibits/q36-4.jpeg",
-        "pending": false,
-        "label": "Exhibit 4"
       }
     ],
     "options": [
       {
         "id": "opt-A",
         "letter": "A",
-        "text": "Exhibit A — saída do `diagnose sniffer packet`"
+        "text": "Saída do `diagnose sniffer packet`",
+        "image": "exhibits/q36-1.png"
       },
       {
         "id": "opt-B",
         "letter": "B",
-        "text": "Exhibit B — `config log fortianalyzer setting`"
+        "text": "`config log fortianalyzer setting`",
+        "image": "exhibits/q36-2.jpeg"
       },
       {
         "id": "opt-C",
         "letter": "C",
-        "text": "Exhibit C — tela do FortiAnalyzer, Logging Mode Real Time"
+        "text": "Tela do FortiAnalyzer, Logging Mode Real Time",
+        "image": "exhibits/q36-3.jpeg"
       },
       {
         "id": "opt-D",
         "letter": "D",
-        "text": "Exhibit D — tela do FortiAnalyzer, Real Time com cadeado"
+        "text": "Tela do FortiAnalyzer, Real Time com cadeado",
+        "image": "exhibits/q36-4.jpeg"
       }
     ],
     "isMultipleChoice": false,
@@ -2017,7 +1993,8 @@ export const SEED_QUESTIONS: Question[] = [
     ],
     "warnings": [],
     "domain": "deployment_system",
-    "explanation": "**Conceito:** reliable logging = TCP 514. Só o sniffer mostra o transporte.\n- ✅ A: o sniffer mostra TCP com ACK na porta 514.\n- ❌ B: a config não tem `set reliable enable`.\n- ❌ C: \"Real Time\" é **quando** os logs são enviados, não o protocolo.\n- ❌ D: a tela com cadeado também não mostra o transporte."
+    "explanation": "**Conceito:** reliable logging = TCP 514. Só o sniffer mostra o transporte.\n- ✅ A: o sniffer mostra TCP com ACK na porta 514.\n- ❌ B: a config não tem `set reliable enable`.\n- ❌ C: \"Real Time\" é **quando** os logs são enviados, não o protocolo.\n- ❌ D: a tela com cadeado também não mostra o transporte.",
+    "kind": "image-choice"
   },
   {
     "id": "q-37",
@@ -4948,43 +4925,44 @@ export const SEED_QUESTIONS: Question[] = [
       },
       {
         "id": "b2",
-        "type": "image",
-        "url": "exhibits/q92-1.png",
-        "pending": false,
-        "label": "Exhibit"
-      },
-      {
-        "id": "b3",
         "type": "text",
-        "content": "Choose the correct order (first to last)."
+        "content": "Arraste os critérios para as posições 1 a 4 (o primeiro critério avaliado fica na posição 1). Uma das caixas sobra."
       }
     ],
     "options": [
       {
         "id": "opt-A",
         "letter": "A",
-        "text": "Connected monitored ports > Priority > HA uptime > FortiGate serial number"
+        "text": "Connected monitored ports"
       },
       {
         "id": "opt-B",
         "letter": "B",
-        "text": "Connected monitored ports > HA uptime > Priority > FortiGate serial number"
+        "text": "Priority"
       },
       {
         "id": "opt-C",
         "letter": "C",
-        "text": "Priority > Connected monitored ports > HA uptime > FortiGate serial number"
+        "text": "HA uptime"
       },
       {
         "id": "opt-D",
         "letter": "D",
-        "text": "HA uptime > Priority > Connected monitored ports > FortiGate serial number"
+        "text": "FortiGate serial number"
+      },
+      {
+        "id": "opt-E",
+        "letter": "E",
+        "text": "System uptime"
       }
     ],
-    "isMultipleChoice": false,
-    "requiredAnswersCount": 1,
+    "isMultipleChoice": true,
+    "requiredAnswersCount": 4,
     "correctAnswers": [
-      "A"
+      "A",
+      "B",
+      "C",
+      "D"
     ],
     "tags": [
       "HA",
@@ -4993,7 +4971,8 @@ export const SEED_QUESTIONS: Question[] = [
     ],
     "warnings": [],
     "domain": "deployment_system",
-    "explanation": "**Conceito:** com override enable, a prioridade sobe antes do HA uptime: monitored ports > priority > uptime > serial.\n- ✅ A: ordem correta com override enable.\n- ❌ B: essa é a ordem com override disable.\n- ❌ C: portas monitoradas sempre vêm primeiro.\n- ❌ D: uptime não vem antes de priority com override."
+    "explanation": "**Conceito:** com override enable, a priority é avaliada antes do HA uptime.\n- ✅ 1º Connected monitored ports: quem tem mais portas monitoradas ativas vence sempre.\n- ✅ 2º Priority: com override, o maior priority vence antes do uptime.\n- ✅ 3º HA uptime: desempate pelo tempo no cluster (diferença maior que 5 min).\n- ✅ 4º FortiGate serial number: desempate final, o maior serial vence.\n- ❌ System uptime: não entra na eleição FGCP; o que conta é o HA uptime.",
+    "kind": "order"
   },
   {
     "id": "q-93",

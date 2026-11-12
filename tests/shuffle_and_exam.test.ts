@@ -53,3 +53,19 @@ test('seed v5: docs 79–93 exist with images on disk and reach returning users'
   const res = syncQuestionsWithSeed(oldBank, SEED_QUESTIONS, 4, 5);
   assert.strictEqual(res.questions.length, 92);
 });
+
+test('Q92 is a drag-and-drop ordering with one distractor; Q36 uses images as alternatives', async () => {
+  const fs = await import('node:fs');
+  const q92 = SEED_QUESTIONS.find((q) => q.docNumber === 92)!;
+  assert.strictEqual(q92.kind, 'order');
+  assert.strictEqual(q92.options.length, 5);
+  assert.strictEqual(q92.requiredAnswersCount, 4);
+  const seq = q92.correctAnswers.map((l) => q92.options.find((o) => o.letter === l)!.text);
+  assert.deepStrictEqual(seq, ['Connected monitored ports', 'Priority', 'HA uptime', 'FortiGate serial number']);
+
+  const q36 = SEED_QUESTIONS.find((q) => q.docNumber === 36)!;
+  assert.strictEqual(q36.kind, 'image-choice');
+  assert.strictEqual(q36.blocks.filter((b) => b.type === 'image').length, 0);
+  for (const o of q36.options) assert.ok(o.image && fs.existsSync('public/' + o.image), `Q36 ${o.letter} image`);
+  assert.deepStrictEqual(q36.correctAnswers, ['A']);
+});

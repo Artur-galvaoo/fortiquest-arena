@@ -85,6 +85,7 @@ export function syncQuestionsWithSeed(
         ...q,
         domain: seed.domain,
         options: seed.options,
+        kind: seed.kind,
         correctAnswers: seed.correctAnswers,
         isMultipleChoice: seed.isMultipleChoice,
         requiredAnswersCount: seed.requiredAnswersCount,

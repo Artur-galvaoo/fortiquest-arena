@@ -28,6 +28,7 @@ import { useTheme } from '../utils/theme';
 import { buildDisplayOptions, originalToDisplayMap, DISPLAY_LETTERS } from '../utils/shuffle';
 import { useExamSession, useTrainerPrefs } from '../utils/exam';
 import { TrainingToolbar } from './TrainingToolbar';
+import { DragOrder } from './DragOrder';
 
 interface MinimalistTrainerProps {
   questions: Question[];
@@ -65,7 +66,8 @@ export const MinimalistTrainer: React.FC<MinimalistTrainerProps> = ({
   // On-screen order of alternatives (reshuffled every time a question is drawn)
   const currentOptions = currentQuestion?.options;
   const displayOptions = useMemo(
-    () => buildDisplayOptions(currentOptions || [], prefs.shuffleOptions),
+    // Drag-and-drop boxes always start mixed, otherwise the pool would already show the answer
+    () => buildDisplayOptions(currentOptions || [], prefs.shuffleOptions || currentQuestion?.kind === 'order'),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [currentQuestion?.id, currentOptions, prefs.shuffleOptions, pickCount]
   );
@@ -152,6 +154,18 @@ export const MinimalistTrainer: React.FC<MinimalistTrainerProps> = ({
 
       const limit = currentQuestion.requiredAnswersCount || 1;
 
+      if (currentQuestion.kind === 'order') {
+        // Fixed slots: remove if placed, otherwise fill the first empty slot
+        setSelectedAnswers((prev) => {
+          const slots = Array.from({ length: limit }, (_, i) => prev[i] || '');
+          const at = slots.indexOf(letter);
+          if (at >= 0) slots[at] = '';
+          else if (slots.includes('')) slots[slots.indexOf('')] = letter;
+          return slots;
+        });
+        return;
+      }
+
       if (!currentQuestion.isMultipleChoice || limit === 1) {
         // Single choice: pick directly
         setSelectedAnswers([letter]);
@@ -177,10 +191,12 @@ export const MinimalistTrainer: React.FC<MinimalistTrainerProps> = ({
     if (isSubmitted || !currentQuestion) return;
 
     const requiredCount = currentQuestion.requiredAnswersCount || 1;
-    if (selectedAnswers.length !== requiredCount) return;
+    if (selectedAnswers.filter(Boolean).length !== requiredCount) return;
 
-    const correctList = (currentQuestion.correctAnswers || []).slice().sort();
-    const userList = selectedAnswers.slice().sort();
+    // Order questions compare the exact sequence; the rest ignore selection order
+    const isOrderQ = currentQuestion.kind === 'order';
+    const correctList = isOrderQ ? (currentQuestion.correctAnswers || []).slice() : (currentQuestion.correctAnswers || []).slice().sort();
+    const userList = isOrderQ ? selectedAnswers.slice() : selectedAnswers.slice().sort();
 
     const isCorrect =
       correctList.length === userList.length &&
@@ -265,7 +281,7 @@ export const MinimalistTrainer: React.FC<MinimalistTrainerProps> = ({
         e.preventDefault();
         if (!isSubmitted) {
           const req = currentQuestion?.requiredAnswersCount || 1;
-          if (selectedAnswers.length === req) {
+          if (selectedAnswers.filter(Boolean).length === req) {
             handleConfirmAnswer();
           }
         } else {
@@ -524,7 +540,7 @@ export const MinimalistTrainer: React.FC<MinimalistTrainerProps> = ({
                 )}
                 {currentQuestion.isMultipleChoice && (
                   <Chip variant="neutral">
-                    Escolha {currentQuestion.requiredAnswersCount}
+                    {currentQuestion.kind === 'order' ? 'Arrastar e soltar' : `Escolha ${currentQuestion.requiredAnswersCount}`}
                   </Chip>
                 )}
               </div>
@@ -656,7 +672,20 @@ export const MinimalistTrainer: React.FC<MinimalistTrainerProps> = ({
             </div>
 
             {/* Alternatives List */}
-            <div className="space-y-2.5 mb-2" role="group" aria-label="Alternativas da questão">
+            {currentQuestion.kind === 'order' ? (
+              <DragOrder
+                items={displayOptions}
+                slots={Array.from({ length: currentQuestion.requiredAnswersCount || 1 }, (_, i) => selectedAnswers[i] || '')}
+                onChange={setSelectedAnswers}
+                submitted={isSubmitted}
+                correct={currentQuestion.correctAnswers || []}
+              />
+            ) : (
+            <div
+              className={`mb-2 ${currentQuestion.kind === 'image-choice' ? 'grid gap-3 sm:grid-cols-2' : 'space-y-2.5'}`}
+              role="group"
+              aria-label="Alternativas da questão"
+            >
               {displayOptions.map(({ option, displayLetter }) => {
                 const letter = option.letter;
                 const isSelected = selectedAnswers.includes(letter);
@@ -682,6 +711,47 @@ export const MinimalistTrainer: React.FC<MinimalistTrainerProps> = ({
                     cardClass = 'bg-surface border border-border text-muted opacity-75';
                     badgeClass = 'bg-subtle text-faint border border-border';
                   }
+                }
+
+                if (option.image) {
+                  return (
+                    <div
+                      key={option.id || letter}
+                      onClick={() => handleToggleOption(letter)}
+                      className={`group relative rounded-xl overflow-hidden flex flex-col transition-all duration-200 select-none ${
+                        !isSubmitted ? 'cursor-pointer hover:-translate-y-0.5' : 'cursor-default'
+                      } ${cardClass} ${isSelected && !isSubmitted ? 'ring-2 ring-accent/40 ring-offset-2 ring-offset-bg' : ''}`}
+                    >
+                      <div className="relative bg-white p-2 flex items-center justify-center min-h-[120px] border-b border-border/60">
+                        <img
+                          src={option.image}
+                          alt={`Alternativa ${displayLetter}: ${option.text}`}
+                          className="exhibit-img max-h-[200px] w-auto max-w-full object-contain rounded-[6px]"
+                          draggable={false}
+                        />
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setActiveLightboxImage({ url: option.image, label: `Alternativa ${displayLetter}` });
+                          }}
+                          className="absolute top-2 right-2 w-8 h-8 rounded-full bg-surface/90 backdrop-blur text-muted hover:text-text border border-border flex items-center justify-center opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity cursor-pointer"
+                          title="Ampliar imagem"
+                          aria-label={`Ampliar imagem da alternativa ${displayLetter}`}
+                        >
+                          <ZoomIn className="w-4 h-4 stroke-[1.75]" />
+                        </button>
+                      </div>
+                      <div className="flex items-center gap-3 px-3.5 py-3">
+                        <span className={`w-8 h-8 shrink-0 rounded-full flex items-center justify-center text-[12px] font-semibold ${badgeClass}`}>
+                          {displayLetter}
+                        </span>
+                        <span className="text-[14px] leading-snug flex-1">{parseInlineMarkdown(option.text)}</span>
+                        {isSubmitted && isCorrect && <Check className="w-4 h-4 text-success stroke-[2]" aria-label="Opção correta" />}
+                        {isSubmitted && isSelected && !isCorrect && <X className="w-4 h-4 text-danger stroke-[2]" aria-label="Opção incorreta" />}
+                      </div>
+                    </div>
+                  );
                 }
 
                 return (
@@ -720,11 +790,12 @@ export const MinimalistTrainer: React.FC<MinimalistTrainerProps> = ({
                 );
               })}
             </div>
+            )}
 
             {/* Selection status under options for multi-choice (B4) */}
             {currentQuestion.isMultipleChoice && !isSubmitted && (
               <p className="text-[12px] text-muted mb-4 pl-1">
-                {selectedAnswers.length} de {currentQuestion.requiredAnswersCount} selecionadas
+                {selectedAnswers.filter(Boolean).length} de {currentQuestion.requiredAnswersCount} {currentQuestion.kind === 'order' ? 'posicionadas' : 'selecionadas'}
               </p>
             )}
 
@@ -739,7 +810,7 @@ export const MinimalistTrainer: React.FC<MinimalistTrainerProps> = ({
                   <div className="ml-auto">
                     <Button
                       variant="primary"
-                      disabled={selectedAnswers.length !== (currentQuestion.requiredAnswersCount || 1)}
+                      disabled={selectedAnswers.filter(Boolean).length !== (currentQuestion.requiredAnswersCount || 1)}
                       onClick={handleConfirmAnswer}
                     >
                       Confirmar
@@ -755,7 +826,7 @@ export const MinimalistTrainer: React.FC<MinimalistTrainerProps> = ({
                       </Chip>
                     ) : (
                       <Chip variant="danger" className="px-3 py-1 h-auto text-[13px]">
-                        Incorreto · resposta {(currentQuestion.correctAnswers || []).map(showLetter).sort().join(', ')}
+                        Incorreto · resposta {currentQuestion.kind === 'order' ? (currentQuestion.correctAnswers || []).map(showLetter).join(' → ') : (currentQuestion.correctAnswers || []).map(showLetter).sort().join(', ')}
                       </Chip>
                     )}
                   </div>

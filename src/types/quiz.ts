@@ -21,6 +21,8 @@ export interface OptionItem {
   id: string;
   letter: string; // 'A', 'B', 'C', 'D', 'E'
   text: string;
+  /** Image shown as the alternative itself (kind: 'image-choice') */
+  image?: string;
 }
 
 export interface Question {
@@ -30,6 +32,8 @@ export interface Question {
   domain: ExamDomain;
   blocks: ContentBlock[];
   options: OptionItem[];
+  /** 'order': drag the options into slots, correctAnswers is the exact sequence. 'image-choice': options are pictures. */
+  kind?: 'order' | 'image-choice';
   isMultipleChoice: boolean;
   requiredAnswersCount: number; // 1, 2, or 3
   correctAnswers: string[]; // e.g. ['A'], ['B', 'D']
