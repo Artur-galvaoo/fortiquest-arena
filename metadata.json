@@ -1,0 +1,6 @@
+{
+  "name": "FortiQuest - Arena NSE4 FortiGate",
+  "description": "Treino por repetição espaçada das questões do NSE4 FortiGate 7.6",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
