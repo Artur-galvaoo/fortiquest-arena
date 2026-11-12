@@ -131,6 +131,42 @@
   animation: fq-pop .35s cubic-bezier(.2, .8, .2, 1) both;
 }
 
+/* Apple-style collapse: height via grid rows + scale/blur/fade of content */
+.fq-collapse {
+  display: grid;
+  grid-template-rows: 1fr;
+  transition: grid-template-rows .6s cubic-bezier(.32, .72, 0, 1);
+}
+.fq-collapse.is-collapsed {
+  grid-template-rows: 0fr;
+}
+.fq-collapse-inner {
+  min-height: 0;
+  overflow: hidden;
+  /* room for the card shadow while open */
+  margin: -12px;
+  padding: 12px;
+}
+.fq-collapse.is-collapsed .fq-collapse-inner {
+  pointer-events: none;
+}
+.fq-collapse-content {
+  transform-origin: 50% 0;
+  transition:
+    transform .6s cubic-bezier(.32, .72, 0, 1),
+    opacity .45s cubic-bezier(.32, .72, 0, 1),
+    filter .5s cubic-bezier(.32, .72, 0, 1),
+    background-color .25s ease, border-color .25s ease;
+}
+.fq-collapse.is-collapsed .fq-collapse-content {
+  transform: scale(.92) translateY(-10px);
+  opacity: 0;
+  filter: blur(10px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .fq-collapse, .fq-collapse-content { transition-duration: .01s; }
+}
+
 @keyframes fq-spin-in {
   from { opacity: 0; transform: rotate(-90deg) scale(.6); }
   to { opacity: 1; transform: none; }

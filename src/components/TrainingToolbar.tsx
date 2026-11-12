@@ -1,5 +1,5 @@
-import React from 'react';
-import { Shuffle, ListOrdered, Timer, Pause, Play, Square, Flag, Hourglass } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { Shuffle, ListOrdered, Timer, Pause, Play, Square, Flag, Hourglass, Eye, EyeOff, ChevronDown } from 'lucide-react';
 import { EXAM_LIMIT_MINUTES, EXAM_LIMIT_MS, ExamSession, formatClock } from '../utils/exam';
 
 interface Props {
@@ -45,6 +45,21 @@ export const TrainingToolbar: React.FC<Props> = ({
   const overLimit = elapsed >= EXAM_LIMIT_MS;
   const pct = Math.min(100, (elapsed / EXAM_LIMIT_MS) * 100);
   const paused = session.active && !session.runningSince;
+  const [hidden, setHidden] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('fq-exam-hidden') === '1';
+    } catch {
+      return false;
+    }
+  });
+  useEffect(() => {
+    try {
+      localStorage.setItem('fq-exam-hidden', hidden ? '1' : '0');
+    } catch {
+      /* ignore */
+    }
+  }, [hidden]);
+
   const avgMs = session.answered > 0 ? elapsed / session.answered : null;
   const accuracy = session.answered > 0 ? Math.round((session.correct / session.answered) * 100) : null;
 
@@ -84,6 +99,18 @@ export const TrainingToolbar: React.FC<Props> = ({
           <div className="flex items-center gap-1">
             <button
               type="button"
+              onClick={() => setHidden((h) => !h)}
+              className="w-9 h-9 inline-flex items-center justify-center rounded-full text-muted hover:text-text hover:bg-subtle transition-colors cursor-pointer"
+              aria-label={hidden ? 'Mostrar tempo e estatísticas' : 'Esconder tempo e estatísticas'}
+              aria-expanded={!hidden}
+              title={hidden ? 'Mostrar tempo' : 'Esconder tempo'}
+            >
+              <span key={hidden ? 'eye' : 'eyeoff'} className="fq-spin-in inline-flex">
+                {hidden ? <Eye className="w-4 h-4 stroke-[2]" /> : <EyeOff className="w-4 h-4 stroke-[2]" />}
+              </span>
+            </button>
+            <button
+              type="button"
               onClick={onTogglePause}
               className="w-9 h-9 inline-flex items-center justify-center rounded-full text-muted hover:text-text hover:bg-subtle transition-colors cursor-pointer"
               aria-label={paused ? 'Retomar cronômetro' : 'Pausar cronômetro'}
@@ -105,8 +132,41 @@ export const TrainingToolbar: React.FC<Props> = ({
       </div>
 
       {session.active && (
+        <div className="fq-enter">
+        {/* Collapsed pill */}
+        <div className={`fq-collapse ${hidden ? '' : 'is-collapsed'}`} aria-hidden={!hidden}>
+          <div className="fq-collapse-inner">
+            <div className="fq-collapse-content pb-1">
+              <button
+                type="button"
+                onClick={() => setHidden(false)}
+                tabIndex={hidden ? 0 : -1}
+                className="group w-full h-11 px-4 flex items-center justify-between rounded-full border border-border bg-surface/80 backdrop-blur shadow-card text-[13px] text-muted hover:text-text hover:border-border-strong transition-colors cursor-pointer"
+              >
+                <span className="flex items-center gap-2.5">
+                  <span className="relative flex w-2 h-2">
+                    {!paused && (
+                      <span className={`absolute inset-0 rounded-full animate-ping opacity-60 ${overLimit ? 'bg-danger' : 'bg-accent'}`} />
+                    )}
+                    <span className={`relative w-2 h-2 rounded-full ${overLimit ? 'bg-danger' : paused ? 'bg-faint' : 'bg-accent'}`} />
+                  </span>
+                  <span className="font-semibold text-text">Simulado {paused ? 'pausado' : 'em andamento'}</span>
+                  <span className="hidden sm:inline">· tempo oculto</span>
+                </span>
+                <span className="flex items-center gap-1 font-semibold">
+                  Mostrar
+                  <ChevronDown className="w-4 h-4 stroke-[2] transition-transform group-hover:translate-y-0.5" />
+                </span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Full panel */}
+        <div className={`fq-collapse ${hidden ? 'is-collapsed' : ''}`} aria-hidden={hidden}>
+          <div className="fq-collapse-inner">
         <div
-          className={`fq-enter rounded-xl border p-4 sm:p-5 shadow-card transition-colors ${
+          className={`fq-collapse-content rounded-xl border p-4 sm:p-5 shadow-card transition-colors ${
             overLimit ? 'bg-danger-soft border-danger/40' : 'bg-surface border-border'
           }`}
         >
@@ -160,6 +220,9 @@ export const TrainingToolbar: React.FC<Props> = ({
               </span>
             )}
           </div>
+        </div>
+          </div>
+        </div>
         </div>
       )}
     </div>
